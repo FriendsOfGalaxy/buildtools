@@ -2,8 +2,14 @@ from setuptools import setup, find_packages
 
 from src.fog.buildtools import __version__
 
+
 with open("README.md", 'r') as f:
     long_description = f.read()
+
+
+with open('requirements/app.txt') as f:
+    dependencies = f.read().splitlines()
+    print(dependencies)
 
 
 setup(
@@ -17,7 +23,7 @@ setup(
     author_email='FriendsOfGalaxy@gmail.com',
     packages=find_packages('src'),
     package_dir={'': 'src'},
-    install_requires=[],
+    install_requires=dependencies,
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
