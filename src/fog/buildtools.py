@@ -44,7 +44,7 @@ def dump_changelog(changelog: Dict[str, str], dest='CHANGELOG.md'):
         f.write(content)
 
 
-def build(src='src', output='build', third_party_output='.', requirements='requirements/app.txt', ziparchive=None):
+def build(src='src', output='build', third_party_output='.', requirements='requirements/app.txt'):
 
     src_path = pathlib.Path(src).resolve()
     out_path = pathlib.Path(output).resolve()
@@ -85,7 +85,7 @@ def build(src='src', output='build', third_party_output='.', requirements='requi
     finally:
         os.unlink(tmp.name)
 
-    print('clean up dist directories and tests')
+    # cleaning up dist directories and tests
     for dir_ in glob.glob(f"{str(out_path)}/*.dist-info"):
         shutil.rmtree(dir_)
     for test in glob.glob(f"{str(out_path)}/**/test_*.py", recursive=True):
