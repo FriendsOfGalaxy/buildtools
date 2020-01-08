@@ -31,16 +31,16 @@ def _run(*args, **kwargs):
     return out
 
 
-def dump_changelog(changelog: Dict[str, str], dest='.'):
-    """Creates CHANGELOG.md based on given `changelog` dict. Keeps given order.
+def dump_changelog(changelog: Dict[str, str], dest='CHANGELOG.md'):
+    """Creates markdown based on given `changelog` dict. Keeps given order.
     :param changelog: keys are versions (eg. '0.3.4')
                       values are release notes (in markdown)
-    :param dest:      path where CHANGELOG.md should be created
+    :param dest:      changelog path destination
     """
     content = '# Changelog\n'
     for k, v in changelog.items():
         content += f"## {k}\n{v}\n"
-    with open(pathlib.Path(dest) / 'CHANGELOG.md') as f:
+    with open(dest, 'w') as f:
         f.write(content)
 
 
