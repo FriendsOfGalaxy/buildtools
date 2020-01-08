@@ -2,12 +2,17 @@ from setuptools import setup, find_packages
 
 from src.fog.buildtools import __version__
 
+with open("README.md", 'r') as f:
+    long_description = f.read()
+
 
 setup(
     name="fog.buildtools",
     version=__version__,
     license="MIT",
-    description="Build tools used by FriendsOfGalaxy plugins",
+    description="Build tools for GOG Galaxy 2.0 plugins",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author='FriendsOfGalaxy',
     author_email='FriendsOfGalaxy@gmail.com',
     packages=find_packages('src'),
