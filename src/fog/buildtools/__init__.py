@@ -1,3 +1,2 @@
 from .buildtools import *
-
-__version__ = "0.2"
+from .version import __version__

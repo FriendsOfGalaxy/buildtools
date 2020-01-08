@@ -9,7 +9,6 @@ with open("README.md", 'r') as f:
 
 with open('requirements/app.txt') as f:
     dependencies = f.read().splitlines()
-    print(dependencies)
 
 
 setup(
