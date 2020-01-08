@@ -6,7 +6,9 @@ import pathlib
 import tempfile
 import shlex
 import subprocess
-from typing import Dict
+from typing import Dict, Optional, TextIO
+
+from .changelog import Changelog
 
 
 RELEASE_FILE ="current_version.json"
@@ -31,17 +33,18 @@ def _run(*args, **kwargs):
     return out
 
 
-def dump_changelog(changelog: Dict[str, str], dest='CHANGELOG.md'):
+def dump_changelog(changelog: Dict[str, str], file_: TextIO, curr_ver=None):
     """Creates markdown based on given `changelog` dict. Keeps given order.
     :param changelog: keys are versions (eg. '0.3.4')
                       values are release notes (in markdown)
-    :param dest:      changelog path destination
+    :param file:      opened file object to dump changelog in
+    :param curr_ver:  current_version; raises RuntimeError if no such version in `changelog`
     """
-    content = '# Changelog\n'
-    for k, v in changelog.items():
-        content += f"## {k}\n{v}\n"
-    with open(dest, 'w') as f:
-        f.write(content)
+    if curr_ver is not None and curr_ver not in changelog:
+        raise RuntimeError(f'No changelog added for current version [{curr_ver}]')
+
+    c = Changelog(changelog)
+    file_.write(c.to_markdown())
 
 
 def build(src='src', output='build', third_party_output='.', requirements='requirements/app.txt'):
