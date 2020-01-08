@@ -74,6 +74,9 @@ def build(src='src', output='build', third_party_output='.', requirements='requi
         raise RuntimeError(f'Platform {sys.platform} not supported')
     pip_target = (out_path / third_party_output).as_posix()
 
+    # tmp = tempfile.NamedTemporaryFile(mode="w", delete=False)
+    # tmp.close()
+
     try:
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
             _run(f'pip-compile {req_path.as_posix()} --output-file=-', stdout=tmp, stderr=subprocess.PIPE, capture_output=False)
@@ -93,5 +96,5 @@ def build(src='src', output='build', third_party_output='.', requirements='requi
         shutil.rmtree(dir_)
     for test in glob.glob(f"{str(out_path)}/**/test_*.py", recursive=True):
         os.remove(test)
-    for test in glob(f"{str(out_path)}/**/*_test.py", recursive=True):
+    for test in glob.glob(f"{str(out_path)}/**/*_test.py", recursive=True):
         os.remove(test)
