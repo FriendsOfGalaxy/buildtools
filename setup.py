@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-from src.fog import __version__
+from src.fog.buildtools import __version__
 
 
 setup(
