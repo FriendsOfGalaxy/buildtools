@@ -6,6 +6,7 @@ import pathlib
 import tempfile
 import shlex
 import subprocess
+import contextlib
 from typing import Dict, Optional, TextIO
 
 from .changelog import Changelog
@@ -31,6 +32,22 @@ def _run(*args, **kwargs):
     else:
         print('>>', out.stdout)
     return out
+
+
+@contextlib.contextmanager
+def chdir(to):
+    path = pathlib.Path(to)
+    if path.is_file():  # probably mean the file directory
+        path = path.parent.resolve()
+    else:
+        path = path.resolve()
+
+    pwd = os.getcwd()
+    os.chdir(path)
+    try:
+        yield str(path)
+    finally:
+        os.chdir(pwd)
 
 
 def dump_changelog(changelog: Dict[str, str], file_: TextIO, curr_ver=None):
@@ -73,9 +90,6 @@ def build(src='src', output='build', third_party_output='.', requirements='requi
     else:
         raise RuntimeError(f'Platform {sys.platform} not supported')
     pip_target = (out_path / third_party_output).as_posix()
-
-    # tmp = tempfile.NamedTemporaryFile(mode="w", delete=False)
-    # tmp.close()
 
     try:
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
