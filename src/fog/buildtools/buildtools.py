@@ -7,7 +7,7 @@ import tempfile
 import shlex
 import subprocess
 import contextlib
-from typing import Dict, Optional, TextIO
+from typing import Dict, Optional, Any, Tuple
 
 from .changelog import Changelog
 
@@ -48,20 +48,6 @@ def chdir(to):
         yield str(path)
     finally:
         os.chdir(pwd)
-
-
-def dump_changelog(changelog: Dict[str, str], file_: TextIO, curr_ver=None):
-    """Creates markdown based on given `changelog` dict. Keeps given order.
-    :param changelog: keys are versions (eg. '0.3.4')
-                      values are release notes (in markdown)
-    :param file:      opened file object to dump changelog in
-    :param curr_ver:  current_version; raises RuntimeError if no such version in `changelog`
-    """
-    if curr_ver is not None and curr_ver not in changelog:
-        raise RuntimeError(f'No changelog added for current version [{curr_ver}]')
-
-    c = Changelog(changelog)
-    file_.write(c.to_markdown())
 
 
 def build(src='src', output='build', third_party_output='.', requirements='requirements/app.txt'):
@@ -112,3 +98,28 @@ def build(src='src', output='build', third_party_output='.', requirements='requi
         os.remove(test)
     for test in glob.glob(f"{str(out_path)}/**/*_test.py", recursive=True):
         os.remove(test)
+
+
+def _load_version_module(repo_path) -> Tuple[str, Dict[str, Any]]:
+    """Helper used in fog plugins due to avoid relative import problems"""
+    version_file = os.path.join(repo_path, "src", "version.py")
+    version = {}
+    exec(open(version_file).read(), version)
+    return version
+
+
+def load_version(repo_path):
+    return _load_version_module(repo_path)['__version__']
+
+
+def update_changelog_file(repo_path, out_dir=os.getcwd()):
+    """Helper function to update changelog file"""
+    version_content = _load_version_module(repo_path)
+    version = version_content['__version__']
+    changelog = version_content.get('__changelog__')
+    if not changelog:  # do not allow for accidental wipe out
+        raise TypeError('Changelog cannot be empty!')
+
+    c = Changelog(changelog, check_for_version=version)
+    with open(os.path.join(out_dir, 'CHANGELOG.md'), 'w') as f:
+        f.write(c.to_markdown())
