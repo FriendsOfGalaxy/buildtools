@@ -24,7 +24,7 @@ def test_changelog_to_markdown():
         "0.1.1": "- fix1\n- fix2",
         "0.1.0": "another log"
     }
-    assert Changelog(changelog).to_markdown() == """# Changelog
+    expected = """# Changelog
 
 ## 0.1.1
 - fix1
@@ -34,6 +34,8 @@ def test_changelog_to_markdown():
 another log
 
 """
+    assert Changelog(changelog).to_markdown() == expected
+
 
 
 def test_changelog_to_markdown_indents():
@@ -43,13 +45,14 @@ def test_changelog_to_markdown_indents():
             - fix2
         """
     }
-    assert Changelog(changelog).to_markdown() == """# Changelog
+    expected = """# Changelog
 
 ## 0.1
 - fix1
 - fix2
 
 """
+    assert Changelog(changelog).to_markdown() == expected
 
 
 def test_changelog_for_version():
