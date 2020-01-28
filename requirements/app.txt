@@ -1,2 +1,2 @@
 pip>=19.3.0
-pip-tools>=4.3.0
+pip-tools>=4.4.0
