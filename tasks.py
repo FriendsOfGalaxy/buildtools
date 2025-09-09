@@ -10,3 +10,7 @@ def release(c):
         shutil.rmtree('dist')
     c.run('python setup.py sdist bdist_wheel')
     c.run('twine upload dist/*')
+
+@task
+def test(c):
+    c.run('python -m pytest tests/ -v')

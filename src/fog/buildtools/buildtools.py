@@ -50,7 +50,16 @@ def chdir(to):
         os.chdir(pwd)
 
 
-def build(src='src', output='build', third_party_output='.', requirements='requirements/app.txt'):
+def build(src='src', output='build', third_party_output='.', requirements='requirements/app.txt', python_version='37'):
+    """Builds a plugin
+
+    Args:
+        src: Path to the source directory (relative to current directory)
+        output: Path to the output directory (relative to current directory)
+        third_party_output: Path to the third party output directory (relative to output)
+        requirements: Path to the requirements file (relative to src)
+        python_version: Python version to use (default: 3.7)
+    """
 
     src_path = pathlib.Path(src).resolve()
     out_path = pathlib.Path(output).resolve()
@@ -84,7 +93,7 @@ def build(src='src', output='build', third_party_output='.', requirements='requi
                 '-r', tmp.name,
                 '--platform', pip_platform,
                 '--target', pip_target,
-                '--python-version', '37',
+                '--python-version', python_version,
                 '--no-compile',
                 '--no-deps'
             )
