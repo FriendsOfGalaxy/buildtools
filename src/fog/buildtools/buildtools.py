@@ -7,7 +7,8 @@ import tempfile
 import shlex
 import subprocess
 import contextlib
-from typing import Dict, Optional, Any, Tuple
+from typing import Dict, Any, Tuple
+import packaging.tags
 
 from .changelog import Changelog
 
@@ -50,7 +51,14 @@ def chdir(to):
         os.chdir(pwd)
 
 
-def build(src='src', output='build', third_party_output='.', requirements='requirements/app.txt', python_version='37'):
+def build(
+    src='src',
+    output='build',
+    third_party_output='.',
+    requirements='requirements/app.txt',
+    python_version='37',
+    pip_platform=None
+    ):
     """Builds a plugin
 
     Args:
@@ -59,6 +67,11 @@ def build(src='src', output='build', third_party_output='.', requirements='requi
         third_party_output: Path to the third party output directory (relative to output)
         requirements: Path to the requirements file (relative to src)
         python_version: Python version to use (default: 3.7)
+        pip_platform: Platform to use for pip (default: None, infer from sys.platform:
+          - win_amd64 for windows,
+          - macosx_13_0_universal2 for darwin,
+          - raise error for other platforms
+        )
     """
 
     src_path = pathlib.Path(src).resolve()
@@ -78,12 +91,22 @@ def build(src='src', output='build', third_party_output='.', requirements='requi
     to_ignore = shutil.ignore_patterns(RELEASE_FILE, '.*', 'test_*.py', '*_test.py', '*.pyc', '__pycache__')
     shutil.copytree(src_path, output, ignore=to_ignore)
 
-    if sys.platform == "win32":
-        pip_platform = "win32"
-    elif sys.platform == "darwin":
-        pip_platform = "macosx_10_13_x86_64"
-    else:
-        raise RuntimeError(f'Platform {sys.platform} not supported')
+    # determine pip platform if not provided
+    if pip_platform is None:
+        if sys.platform == "win32":
+            pip_platform = "win_amd64"
+        elif sys.platform == "darwin":
+            pip_platform = "macosx_13_0_universal2"
+        else:
+            raise RuntimeError(f'Platform {sys.platform} not supported')
+    # check if pip platform is supported by the current Python version
+    pip_platforms = set(str(tag.platform) for tag in packaging.tags.sys_tags())
+    if pip_platform not in pip_platforms:
+        raise RuntimeError(
+            f'Platform {pip_platform} not supported'
+            f', available platforms: {", ".join(sorted(pip_platforms))}.'
+        )
+
     pip_target = (out_path / third_party_output).as_posix()
 
     try:
