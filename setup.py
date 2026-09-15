@@ -15,7 +15,7 @@ setup(
     name="fog.buildtools",
     version=__version__,
     license="MIT",
-    description="Build tools for GOG Galaxy 2.0 plugins",
+    description="Build tools for GOG Galaxy plugins",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='FriendsOfGalaxy',

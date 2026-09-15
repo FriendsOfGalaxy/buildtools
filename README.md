@@ -1,3 +1,3 @@
 # buildtools
 
-Common functions used for building GOG Galaxy 2.0 plugins.
+Common functions used for building GOG Galaxy plugins.

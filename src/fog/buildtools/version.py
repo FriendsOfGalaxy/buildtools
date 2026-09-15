@@ -1,6 +1,9 @@
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 
 __changelog__ = {
+    "1.0.4":"""
+        - Added compiled_dependencies_filename parameter to build function to allow preserving the compiled dependencies list
+    """,
     "1.0.3":"""
         - Changed default pip platform to macosx_11_0_universal2 on macOS
         - Changed default pip platform to win_amd64 on Windows

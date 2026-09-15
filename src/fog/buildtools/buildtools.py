@@ -57,7 +57,8 @@ def build(
     third_party_output='.',
     requirements='requirements/app.txt',
     python_version='37',
-    pip_platform=None
+    pip_platform=None,
+    compiled_dependencies_filename=None,
     ):
     """Builds a plugin
 
@@ -72,6 +73,7 @@ def build(
           - macosx_13_0_universal2 for darwin,
           - raise error for other platforms
         )
+        compiled_dependencies_filename: Path to the compiled dependencies list output file (default: None, no output)
     """
 
     src_path = pathlib.Path(src).resolve()
@@ -120,6 +122,9 @@ def build(
                 '--no-compile',
                 '--no-deps'
             )
+            if compiled_dependencies_filename:
+                shutil.copyfile(tmp.name, compiled_dependencies_filename)
+
     finally:
         os.unlink(tmp.name)
 
