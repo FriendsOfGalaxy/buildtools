@@ -114,7 +114,9 @@ def build(
     try:
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
             _run(
-                f'pip-compile {req_path.as_posix()} --output-file=-',
+                'pip-compile',
+                req_path.as_posix(),
+                '--output-file=-',
                 '--no-emit-index-url',
                 '--no-emit-trusted-host',
                 stdout=tmp,
