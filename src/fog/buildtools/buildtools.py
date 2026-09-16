@@ -113,7 +113,14 @@ def build(
 
     try:
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
-            _run(f'pip-compile {req_path.as_posix()} --output-file=-', stdout=tmp, stderr=subprocess.PIPE, capture_output=False)
+            _run(
+                f'pip-compile {req_path.as_posix()} --output-file=-',
+                '--no-emit-index-url',
+                '--no-emit-trusted-host',
+                stdout=tmp,
+                stderr=subprocess.PIPE,
+                capture_output=False)
+
             _run('pip', 'install',
                 '-r', tmp.name,
                 '--platform', pip_platform,
@@ -122,6 +129,7 @@ def build(
                 '--no-compile',
                 '--no-deps'
             )
+
             if compiled_dependencies_filename:
                 shutil.copyfile(tmp.name, compiled_dependencies_filename)
 

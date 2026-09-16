@@ -1,6 +1,9 @@
-__version__ = "1.0.4"
+__version__ = "1.0.5"
 
 __changelog__ = {
+    "1.0.5":"""
+        - Added --no-emit-index-url and --no-emit-trusted-host to pip-compile command to avoid emitting index url and trusted host to avoid potential security issues
+    """,
     "1.0.4":"""
         - Added compiled_dependencies_filename parameter to build function to allow preserving the compiled dependencies list
     """,
